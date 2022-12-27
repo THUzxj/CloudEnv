@@ -19,3 +19,29 @@ python thorfi_client.py -i $OPENSTACK_MANAGER_IP -p 7777 -a http://$OPENSTACK_MA
 # Load Test
 
 [load-test](https://github.com/microservices-demo/load-test)
+
+# Target Error Model
+
+- Virtual network components' performance problem
+- Virtual network components' misconfiguration 
+
+
+```bash
+sudo tc qdisc add dev br-ex root netem loss 20% delay 300ms
+sudo tc qdisc del dev br-ex root netem
+
+sudo tc qdisc add dev tap81a0af59-a6 root netem loss 20% delay 300ms # 10.0.0.10
+sudo tc qdisc del dev tap81a0af59-a6 root netem
+
+# misconfiguration
+loss 100%
+openstack router # delete
+openstack security group
+
+```
+
+# Data Collection
+
+```
+locust -f locustfile.py --headless -u 500 -r 10 -H http://172.24.4.150:30001
+```

@@ -1,3 +1,7 @@
+# Grafana
+
+[panel json](https://grafana.com/api/dashboards/1860/revisions/29/download)
+
 # Prometheus
 
 Running on the host

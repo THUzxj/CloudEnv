@@ -133,7 +133,6 @@ def to_zip_archive(output_folder):
 
 # Example Run: "python3 prometheus_2_csv.py output/"
 if __name__ == "__main__":
-    
     node_exporter_filedirlist = gen_filedirlist()
     #print(node_exporter_filedirlist)
     filedirindex = 0

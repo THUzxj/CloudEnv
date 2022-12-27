@@ -1,2 +1,5 @@
 **/__pycache__
 common.sh
+common.fish
+data
+.vscode/
