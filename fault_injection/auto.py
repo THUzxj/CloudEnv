@@ -18,7 +18,7 @@ WORKLOAD_CONFIGS=[
 ]
 
 FAULT_DEVICES=[
-    "br-ex", "tap59bf5233-ce", "tap81a0af59-a6", "tapa1131989-c0", "veth236b2ec", "veth2f9a704"
+    "br-ex", "tap59bf5233-ce", "tap81a0af59-a6", "tapa1131989-c0", # "veth236b2ec", "veth2f9a704"
 ]
 
 # FAULT_TYPES=[
@@ -94,8 +94,8 @@ def generate_faults():
 def getArgs():
     parser = argparse.ArgumentParser(description='Process args for retrieving arguments')
     parser.add_argument('-l', "--log", help="log file", required=True)
-    parser.add_argument("-p", "--padding", help="padding_time", required=True)
-    parser.add_argument("-d", "--duations", help="fault injection duation", required=True)
+    parser.add_argument("-p", "--padding", help="padding_time (second)", required=True)
+    parser.add_argument("-d", "--duations", help="fault injection duation (second)", required=True)
 
     return parser.parse_args()
 
@@ -105,6 +105,7 @@ if __name__ == "__main__":
 
     # assert os.path.isdir(LABEL_DIR)
     args = getArgs()
+    # must run in root
     assert os.getuid() == 0
 
     file = open(args.log, "a")
@@ -113,21 +114,22 @@ if __name__ == "__main__":
 
     fault_times = [int(duation) for duation in args.duations.split(',')]
     try:
-        for fiTime in fault_times:
-            for dev in FAULT_DEVICES:
-                for faultSet in itertools.product(*faultGroups):
-                    faultConfig = FaultConfig(dev, faultSet)
-                    addCmd = faultConfig.get_add_command()
-                    delCmd = faultConfig.get_del_command()
-                    print(addCmd)
-                    file.write(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}, {dev}, {faultConfig.get_description()}, start\n")
-                    os.system(addCmd)
-                    time.sleep(fiTime)
-                    print(delCmd)
-                    file.write(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}, {dev}, {faultConfig.get_description()}, stop\n")
-                    file.flush()
-                    os.system(delCmd)
-                    time.sleep(int(args.padding))
+        while True:
+            for fiTime in fault_times:
+                for dev in FAULT_DEVICES:
+                    for faultSet in itertools.product(*faultGroups):
+                        faultConfig = FaultConfig(dev, faultSet)
+                        addCmd = faultConfig.get_add_command()
+                        delCmd = faultConfig.get_del_command()
+                        print(addCmd)
+                        file.write(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}, {dev}, {faultConfig.get_description()}, start\n")
+                        os.system(addCmd)
+                        time.sleep(fiTime)
+                        print(delCmd)
+                        file.write(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}, {dev}, {faultConfig.get_description()}, stop\n")
+                        file.flush()
+                        os.system(delCmd)
+                        time.sleep(int(args.padding))
     finally:
         for dev in FAULT_DEVICES:
             os.system(f"tc qdisc del dev {dev} root netem")

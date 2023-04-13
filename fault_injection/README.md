@@ -39,9 +39,3 @@ openstack router # delete
 openstack security group
 
 ```
-
-# Data Collection
-
-```
-locust -f locustfile.py --headless -u 500 -r 10 -H http://172.24.4.150:30001
-```
