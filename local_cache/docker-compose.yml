@@ -1,0 +1,61 @@
+version: "3.0"
+services:
+  acng:
+    container_name: cache.lab.com
+    image: apt-cacher-ng:ubuntu-18-04
+    restart: always
+    expose:
+      - 80
+    ports:
+      - 192.168.121.1:8003:80
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - ./acng_data:/var/cache/apt-cacher-ng:rw
+    logging:
+      driver: "json-file"
+      options:
+          max-size: "1m"
+
+  nginx:
+    image: nginx:1.19.6-alpine
+    restart: always
+    ports:
+      - 192.168.121.1:8004:80
+    volumes:
+      - ./nginx_data:/usr/share/nginx/html
+
+  # devpi:
+  #   image: lordgaav/devpi
+  #   restart: always
+  #   ports:
+  #     - 192.168.121.1:8005:3141
+  #   volumes:
+  #     - ./devpi_data:/devpi
+
+  devpi2:
+    image: lowinli98/devpi:v0.1
+    expose:
+      - 7104
+    ports:
+      - "192.168.121.1:8005:7104"
+    environment:
+      - DEVPISERVER_HOST=0.0.0.0
+      - DEVPISERVER_PORT=7104
+      - DEVPISERVER_ROOT_PASSWORD=password
+      - DEVPISERVER_USER=root
+      - DEVPISERVER_PASSWORD=password
+      - DEVPISERVER_MIRROR_INDEX=pypi                    # 指定镜像index
+      - DEVPISERVER_LIB_INDEX=devpi                      # 指定上传index
+      - SOURCE_MIRROR_URL=https://pypi.tuna.tsinghua.edu.cn/simple # 指定镜像源
+    restart: always
+    volumes:
+      - ./devpi_data:/var/lib/devpi
+
+  git-cache:
+    image: git_cache
+    restart: always
+    ports:
+      - 192.168.121.1:8002:80
+    volumes:
+      - ./git_cache_data:/git-cache-http-server/data
