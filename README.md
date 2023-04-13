@@ -9,16 +9,21 @@ cp common.sh.sample common.sh
 source common.sh
 ```
 
-## Proxy
+## Troubleshooting
 
-### docker daemon
+### Docker internet problem in China
 
-```
+#### docker daemon
+
+```bash
 vi etc/systemd/system/docker.service.d/http-proxy.conf 
 ```
 
-### docker build
+#### docker build
 
+```bash
+vi ~/.docker/config.json
+```
 
 # Known problems
 
