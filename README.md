@@ -8,3 +8,18 @@ An all-in-one cloud environment for experiments.
 cp common.sh.sample common.sh
 source common.sh
 ```
+
+## Proxy
+
+### docker daemon
+
+```
+vi etc/systemd/system/docker.service.d/http-proxy.conf 
+```
+
+### docker build
+
+
+# Known problems
+
+
