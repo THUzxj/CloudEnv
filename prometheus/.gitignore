@@ -1,4 +1,5 @@
-*data/
+*data*/
 prometheus.yml
 config.py
-panel.json
+*.json
+datasets/

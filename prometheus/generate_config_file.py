@@ -16,4 +16,4 @@ scrape_configs:
 '''
 
 with open("prometheus.yml", "w") as f:
-  f.write(template.format(",".join(["'" + a["ip"] + ":9090'" for a in config.NODES])))
+  f.write(template.format(",".join(["'" + a["ip"] + ":9100'" for a in config.NODES])))
